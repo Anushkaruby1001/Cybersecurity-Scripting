@@ -2,7 +2,7 @@
 
 A collection of Python scripts created while learning Python for cybersecurity.
 
-## 📚 Topics Covered
+## Topics Covering
 
 - Variables and Data Types
 - Conditional Statements
@@ -13,15 +13,15 @@ A collection of Python scripts created while learning Python for cybersecurity.
 - Object-Oriented Programming
 - Basic Automation Scripts
 
-## 🛠️ Technologies
+## Technologies
 
 - Python 3
 - Visual Studio Code
 
-## 🎯 Purpose
+## Purpose
 
 This repository documents my Python learning journey as I prepare for a career in cybersecurity and SOC analysis.
 
-## 👩‍💻 Author
+## Author
 
 Anushka
