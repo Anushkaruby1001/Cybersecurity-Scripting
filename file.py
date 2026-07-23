@@ -55,6 +55,8 @@ def load_from_file():
     except FileNotFoundError:
         print("No inventory file found. Starting fresh.")
 load_from_file()
+
+
 while True:
     print()
 
@@ -82,6 +84,7 @@ while True:
     elif choice == "6":
         save_to_file()
     elif choice == "7":
+        save_to_file()
         show_tools()
         print("Goodbye")
         break
@@ -89,9 +92,3 @@ while True:
         print("Invalid Choice")
 # show_tools()
 
-# filename = input("Enter the filename:").strip().lower()
-# extensions = (".exe",".dll",".bat")
-# if filename.endswith(extensions):
-#     print("Executable file Detected")
-# else:
-#     print("Not an Executable")

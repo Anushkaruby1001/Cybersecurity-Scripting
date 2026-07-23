@@ -1,0 +1,9 @@
+blocked_ips = {
+    "192.168.1.10": "Blocked",
+    "10.0.0.5": "Blocked",
+    "172.16.1.20": "Blocked"
+}
+
+# print(blocked_ips.keys())
+for value in blocked_ips.values():
+    print(value)
