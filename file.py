@@ -11,10 +11,12 @@ def show_tools():
 # show_tools()
 
 def search_tool():
-    tool = input("Enter your tool name:")
-    if tool in security_tools:
-        print("Tool found:", tool)
-        print("Category:",security_tools[tool])
+    tool = input("Enter your tool name: ").lower().strip()
+    for tool_name, category in security_tools.items():
+        if tool_name.lower() == tool:
+            print("Tool Found:", tool_name)
+            print("Category:", category)
+            break
     else:
         print("Tool Not Found")
 # search_tool()
