@@ -24,8 +24,11 @@ def search_tool():
 def add_tool():
     adding_tool = input("Enter what tool you want to add:")
     adding_category = input ("Enter what you want to add category for the tool:")
-    security_tools[adding_tool] = adding_category
-    print("Tool added successfully!")
+    if adding_tool in security_tools:
+       print("Tool Already Exist")
+    else:
+      security_tools[adding_tool] = adding_category
+      print("Tool added successfully!")
 # add_tool()
 
 def count_tools():
