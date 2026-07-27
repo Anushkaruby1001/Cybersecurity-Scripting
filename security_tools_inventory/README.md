@@ -36,7 +36,7 @@ A simple command-line Python application for managing a cybersecurity tool inven
 ```text
 Security-Tool-Inventory/
 │
-├── file.py
+├── security_tool_inventory.py
 ├── security_tools.txt
 └── README.md
 ```
