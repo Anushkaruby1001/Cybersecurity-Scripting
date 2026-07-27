@@ -35,10 +35,21 @@ def count_tools():
     return len(security_tools)
 
 def remove_tool():
-    removing_tool = input("Enter tool you want to delete:")
+    removing_tool = input("Enter tool you want to delete: ")
+
     if removing_tool in security_tools:
-     del security_tools[removing_tool]
-     print("Tool Removed Successfully")
+        ask = input("Are you sure you want to delete? (yes/no): ").lower().strip()
+
+        if ask == "yes":
+            del security_tools[removing_tool]
+            print("Tool Removed Successfully")
+
+        elif ask == "no":
+            print("Deletion Cancelled")
+
+        else:
+            print("Invalid choice")
+
     else:
         print("Tool Not Found")
 
