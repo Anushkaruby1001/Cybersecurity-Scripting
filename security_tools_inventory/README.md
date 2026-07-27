@@ -58,7 +58,7 @@ cd Security-Tool-Inventory
 3. Run the application.
 
 ```bash
-python file.py
+python security_tool_inventory.py
 ```
 
 ## Menu
