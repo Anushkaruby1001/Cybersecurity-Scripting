@@ -1,7 +1,9 @@
-import os
-file = input("Enter the filename:")
-if os.path.exists(file):
-    os.remove(file)
-    print("File Deleted Successfully")
-else:
-    print("File Not Found")
+file = input("Enter filename:")
+try:
+ with open(file,"r")as f:
+    content = f.read()
+    print(content)
+except FileNotFoundError:
+    print("file not found")
+finally:
+   print("operation completed")
