@@ -1,9 +1,0 @@
-file = input("Enter filename:")
-try:
- with open(file,"r")as f:
-    content = f.read()
-    print(content)
-except FileNotFoundError:
-    print("file not found")
-finally:
-   print("operation completed")
