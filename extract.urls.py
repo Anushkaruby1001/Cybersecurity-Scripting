@@ -7,64 +7,45 @@ with open("security.log", "r") as file:
 
 # Regular Expressions
 ips = re.findall(r"\d+\.\d+\.\d+\.\d+", content)
-emails = re.findall(r"\w+@\w+\.\w+", content)
+emails = re.findall(r"\b[\w.-]+@[\w.-]+\.\w+\b", content)
 dates = re.findall(r"\d{4}-\d{2}-\d{2}", content)
 times = re.findall(r"\d{2}:\d{2}:\d{2}", content)
 urls = re.findall(r"https?://[^\s]+", content)
-users = re.findall(r"User:\s*(\w+)", content)
-
-failed_logins = re.findall(r"Failed login", content, re.IGNORECASE)
-success_logins = re.findall(r"Login Successful", content, re.IGNORECASE)
-
-severity = re.findall(r"INFO|WARNING|ERROR|CRITICAL", content, re.IGNORECASE)
-
+domains = re.findall(r"\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b", content)
 ports = re.findall(r":(\d{1,5})", content)
-
-sql = re.findall(
-    r"union|select|drop|insert|delete|' or '1'='1|--",
-    content,
-    re.IGNORECASE
-)
-
-xss = re.findall(
-    r"<script>|javascript:|onerror=|onload=",
-    content,
-    re.IGNORECASE
-)
-
-commands = re.findall(
-    r"powershell|cmd\.exe|bash|curl|wget|nc|netcat",
-    content,
-    re.IGNORECASE
-)
-
-files = re.findall(
-    r"\b[\w.-]+\.(?:exe|dll|pdf|zip|docx|txt|js|php|bat)\b",
-    content,
-    re.IGNORECASE
-)
+users = re.findall(r"User:\s*(\w+)", content)
+failed = re.findall(r"Failed login", content, re.IGNORECASE)
+severity = re.findall(r"INFO|WARNING|ERROR|CRITICAL", content, re.IGNORECASE)
+sql = re.findall(r"union|select|drop|delete|insert|' or '1'='1|--", content, re.IGNORECASE)
+xss = re.findall(r"<script>|javascript:|onerror=|onload=", content, re.IGNORECASE)
+commands = re.findall(r"powershell|cmd\.exe|bash|curl|wget|nc", content, re.IGNORECASE)
+hashes = re.findall(r"\b[a-fA-F0-9]{32,64}\b", content)
 
 # Counters
 ip_counter = Counter(ips)
-severity_counter = Counter([s.upper() for s in severity])
+severity_counter = Counter(map(str.upper, severity))
 
-# Display Report
+# Print Report
 print("=" * 50)
 print("      MINI SOC LOG ANALYZER")
 print("=" * 50)
+
+print("\nUnique IP Addresses")
+for ip in sorted(set(ips)):
+    print(ip)
 
 print("\nTop 5 Active IPs")
 for ip, count in ip_counter.most_common(5):
     print(f"{ip} -> {count} events")
 
 print("\nPrivate/Public IPs")
-for ip in set(ips):
+for ip in sorted(set(ips)):
     if ip.startswith(("10.", "192.168.", "172.")):
         print(f"{ip} -> Private")
     else:
         print(f"{ip} -> Public")
 
-print("\nEmail Addresses")
+print("\nEmails")
 for email in sorted(set(emails)):
     print(email)
 
@@ -72,13 +53,13 @@ print("\nUsernames")
 for user in sorted(set(users)):
     print(user)
 
+print("\nDomains")
+for domain in sorted(set(domains)):
+    print(domain)
+
 print("\nURLs")
 for url in sorted(set(urls)):
     print(url)
-
-print("\nFiles")
-for f in sorted(set(files)):
-    print(f)
 
 print("\nPorts")
 print(", ".join(sorted(set(ports))))
@@ -89,54 +70,58 @@ print(", ".join(sorted(set(dates))))
 print("\nTimes")
 print(", ".join(sorted(set(times))))
 
-print("\nSeverity Report")
-for level, count in severity_counter.items():
-    print(f"{level}: {count}")
+print("\nHashes")
+for h in hashes:
+    print(h)
 
-print("\nSecurity Events")
-print(f"Failed Logins      : {len(failed_logins)}")
-print(f"Successful Logins  : {len(success_logins)}")
-print(f"Possible SQLi      : {len(sql)}")
-print(f"Possible XSS       : {len(xss)}")
-print(f"Suspicious Commands: {len(commands)}")
-
-print("\nSuspicious Commands Found")
+print("\nSuspicious Commands")
 for cmd in sorted(set(commands)):
     print(cmd)
 
-print("\nBrute Force Check")
+print("\nSeverity Summary")
+for level, count in severity_counter.items():
+    print(f"{level}: {count}")
+
+print("\nFailed Login Attempts:", len(failed))
+print("Possible SQL Injection Attempts:", len(sql))
+print("Possible XSS Attempts:", len(xss))
+
+print("\nBrute Force Detection")
 for ip, count in ip_counter.items():
     if count >= 5:
-        print(f"{ip} -> High Activity ({count} events)")
+        print(f"WARNING: {ip} appeared {count} times")
 
-print("\nSummary")
+print("\nOverall Summary")
 print("-" * 50)
 print(f"Total IPs          : {len(ips)}")
 print(f"Unique IPs         : {len(set(ips))}")
 print(f"Emails             : {len(emails)}")
-print(f"Users              : {len(users)}")
+print(f"Domains            : {len(domains)}")
 print(f"URLs               : {len(urls)}")
-print(f"Files              : {len(files)}")
-print(f"Ports              : {len(set(ports))}")
-print(f"Dates              : {len(set(dates))}")
-print(f"Times              : {len(set(times))}")
+print(f"Ports              : {len(ports)}")
+print(f"Dates              : {len(dates)}")
+print(f"Times              : {len(times)}")
+print(f"Failed Logins      : {len(failed)}")
+print(f"SQLi Indicators    : {len(sql)}")
+print(f"XSS Indicators     : {len(xss)}")
+print(f"Commands Detected  : {len(commands)}")
+print(f"Hashes Found       : {len(hashes)}")
 
 # Save report
 with open("report.txt", "w") as report:
-    report.write("MINI SOC LOG ANALYZER REPORT\n")
+    report.write("Mini SOC Log Analyzer Report\n")
     report.write("=" * 40 + "\n\n")
 
-    report.write("Top IPs\n")
-    for ip, count in ip_counter.most_common():
+    report.write("Top Active IPs\n")
+    for ip, count in ip_counter.most_common(5):
         report.write(f"{ip} -> {count}\n")
 
-    report.write("\nSeverity Report\n")
+    report.write("\nSeverity Summary\n")
     for level, count in severity_counter.items():
         report.write(f"{level}: {count}\n")
 
-    report.write(f"\nFailed Logins: {len(failed_logins)}")
-    report.write(f"\nSuccessful Logins: {len(success_logins)}")
-    report.write(f"\nSQLi Attempts: {len(sql)}")
-    report.write(f"\nXSS Attempts: {len(xss)}")
+    report.write(f"\nFailed Logins: {len(failed)}")
+    report.write(f"\nSQLi Indicators: {len(sql)}")
+    report.write(f"\nXSS Indicators: {len(xss)}")
 
-print("\nReport saved successfully as report.txt")
+print("\nReport saved as report.txt")
